@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard | CareerFlow AI{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-5">
+        <div class="col-12 text-center">
+            <h1 class="dashboard-header mb-2" style="font-size:2.5rem; font-weight:800; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                <i class="fas fa-tachometer-alt me-3"></i>Dashboard
+            </h1>
+            <p class="lead" style="font-size: 1.1rem; color: #555;">Welcome back, <strong style="color: #667eea;">{{ user.first_name|default:user.username }}</strong>! Let's prepare you for success.</p>
+        </div>
+    </div>
+    <div class="row g-4">
+        <div class="col-lg-4 col-md-6">
+            <div class="card shadow-lg border-0 h-100 position-relative overflow-hidden">
+                <div style="position: absolute; top: 0; right: 0; width: 100px; height: 100px; background: linear-gradient(135deg, #667eea15 0%, transparent 100%); border-radius: 50%; margin: -50px -50px 0 0;"></div>
+                <div class="card-body text-center position-relative" style="z-index: 1;">
+                    <div style="font-size: 2.5rem; color: #667eea; margin-bottom: 1rem;"><i class="fas fa-comments"></i></div>
+                    <h5 class="card-title fw-bold" style="font-size: 1.2rem;"><i class="fas fa-sparkles me-2" style="color: #667eea;"></i>Start Interview</h5>
+                    <p class="card-text" style="color: #666; margin-bottom: 1.5rem;">Begin a new mock interview session with AI-powered questions.</p>
+                    <a href="{% url 'interview_setup' %}" class="btn btn-primary btn-lg w-100"><i class="fas fa-play me-2"></i>Start New</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="card shadow-lg border-0 h-100 position-relative overflow-hidden">
+                <div style="position: absolute; top: 0; right: 0; width: 100px; height: 100px; background: linear-gradient(135deg, #43e97b15 0%, transparent 100%); border-radius: 50%; margin: -50px -50px 0 0;"></div>
+                <div class="card-body text-center position-relative" style="z-index: 1;">
+                    <div style="font-size: 2.5rem; color: #43e97b; margin-bottom: 1rem;"><i class="fas fa-user"></i></div>
+                    <h5 class="card-title fw-bold" style="font-size: 1.2rem;"><i class="fas fa-cog me-2" style="color: #43e97b;"></i>Profile</h5>
+                    <p class="card-text" style="color: #666; margin-bottom: 1.5rem;">Update your information and monitor your progress.</p>
+                    <a href="{% url 'profile' %}" class="btn btn-success btn-lg w-100"><i class="fas fa-user-edit me-2"></i>View Profile</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="card shadow-lg border-0 h-100 position-relative overflow-hidden">
+                <div style="position: absolute; top: 0; right: 0; width: 100px; height: 100px; background: linear-gradient(135deg, #00d4ff15 0%, transparent 100%); border-radius: 50%; margin: -50px -50px 0 0;"></div>
+                <div class="card-body text-center position-relative" style="z-index: 1;">
+                    <div style="font-size: 2.5rem; color: #00d4ff; margin-bottom: 1rem;"><i class="fas fa-chart-line"></i></div>
+                    <h5 class="card-title fw-bold" style="font-size: 1.2rem;"><i class="fas fa-history me-2" style="color: #00d4ff;"></i>Summary</h5>
+                    <p class="card-text" style="color: #666; margin-bottom: 1.5rem;">Review all interviews, feedback, and track your growth.</p>
+                    <a href="{% url 'summary' %}" class="btn btn-info btn-lg w-100"><i class="fas fa-list me-2"></i>View Summary</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

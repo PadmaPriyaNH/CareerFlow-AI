@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: careerflow
+          POSTGRES_USER: careerflow
+          POSTGRES_PASSWORD: careerflow
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U careerflow" --health-interval 10s --health-timeout 5s --health-retries 5
+    env:
+      DATABASE_URL: postgres://careerflow:careerflow@localhost:5432/careerflow
+      SECRET_KEY: test-secret-key
+      DEBUG: 'True'
+      ALLOWED_HOSTS: localhost,127.0.0.1,testserver
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Wait for Postgres
+        run: |
+          for i in {1..20}; do
+            pg_isready -h localhost -U careerflow && break
+            sleep 2
+          done
+      - name: Run migrations
+        run: |
+          python manage.py migrate --noinput
+      - name: Run tests
+        run: |
+          python manage.py test --verbosity=2

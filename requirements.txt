@@ -1,0 +1,28 @@
+Django>=5.0
+pillow
+python-docx
+PyPDF2
+requests
+python-dotenv
+
+# MFA
+django-two-factor-auth
+django-otp
+qrcode
+
+# AI / LangChain
+langchain
+langchain-community
+
+# Database
+psycopg2-binary
+dj-database-url
+
+# Server
+gunicorn
+
+# Static files in production
+whitenoise
+
+# Optional Azure Blob Storage for MEDIA
+django-storages[azure]

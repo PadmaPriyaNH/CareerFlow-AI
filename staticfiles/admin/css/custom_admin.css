@@ -1,0 +1,25 @@
+/* Custom admin CSS for modern look */
+body.login, body {
+    .login .branding h1 {
+        color: #222 !important;
+        font-size: 2rem !important;
+        font-weight: 700 !important;
+        letter-spacing: 1px;
+    }
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}
+
+.login .branding h1, .login .branding, .module h2, .module caption, .module th {
+    color: #222 !important;
+    font-weight: bold !important;
+    letter-spacing: 1px;
+}
+.module h2, .module caption, .module th {
+    color: #667eea !important;
+}
+.login .submit-row input {
+    background: #667eea !important;
+    border: none;
+    color: #fff;
+    font-weight: bold;
+}

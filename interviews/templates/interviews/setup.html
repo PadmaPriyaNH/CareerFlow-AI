@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Setup Interview | CareerFlow AI{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-6 col-md-8">
+      <div class="card shadow-lg border-0">
+        <div class="card-header bg-gradient text-center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+          <h3 class="mb-0" style="color:#222;font-weight:600;"><i class="fas fa-clipboard-list me-2"></i>Setup Your Interview</h3>
+        </div>
+        <div class="card-body p-4">
+          <form method="post" enctype="multipart/form-data" autocomplete="off">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label class="form-label">Job Description</label>
+              {{ form.job_description }}
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Target Role</label>
+              {{ form.role_title }}
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Upload Resume (PDF or DOCX)</label>
+              {{ form.resume }}
+            </div>
+            <div class="d-grid mt-4">
+              <button type="submit" class="btn btn-primary btn-lg shadow-sm"><i class="fas fa-rocket me-2"></i>Start Interview</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block title %}Login Choice | CareerFlow AI{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-7 col-md-9">
+      <div class="card shadow-lg border-0">
+        <div class="card-body text-center p-5">
+          <div class="mb-5">
+            <h1 class="fw-bold mb-2" style="font-size: 3rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: 1px;">
+              <i class="fas fa-rocket me-2"></i>CareerFlow AI
+            </h1>
+            <div class="mb-3">
+              <span class="badge bg-success fs-6 py-2 px-4" style="font-size: 1rem; letter-spacing: 0.5px;">
+                <i class="fas fa-crown me-2"></i>Empower Your Interview Journey
+              </span>
+            </div>
+            <div class="my-5">
+              <ul class="list-unstyled mb-0 text-start mx-auto" style="max-width: 450px;">
+                <li class="mb-4 d-flex align-items-start">
+                  <div class="me-3 p-2" style="background: #667eea15; border-radius: 0.8rem; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #667eea;">
+                    <i class="fas fa-bolt"></i>
+                  </div>
+                  <div>
+                    <h6 class="mb-1 fw-bold">Real Interview Practice</h6>
+                    <p class="mb-0 text-muted" style="font-size: 0.9rem;">Practice real-world interview questions across various domains</p>
+                  </div>
+                </li>
+                <li class="mb-4 d-flex align-items-start">
+                  <div class="me-3 p-2" style="background: #43e97b15; border-radius: 0.8rem; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #43e97b;">
+                    <i class="fas fa-robot"></i>
+                  </div>
+                  <div>
+                    <h6 class="mb-1 fw-bold">AI-Powered Feedback</h6>
+                    <p class="mb-0 text-muted" style="font-size: 0.9rem;">Get instant, personalized feedback to improve your answers</p>
+                  </div>
+                </li>
+                <li class="d-flex align-items-start">
+                  <div class="me-3 p-2" style="background: #00d4ff15; border-radius: 0.8rem; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #00d4ff;">
+                    <i class="fas fa-chart-bar"></i>
+                  </div>
+                  <div>
+                    <h6 class="mb-1 fw-bold">Track Progress</h6>
+                    <p class="mb-0 text-muted" style="font-size: 0.9rem;">Monitor your growth and boost your confidence over time</p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <hr class="my-4" style="border-color: #e0e4e8;">
+          <h2 class="mb-4 fw-bold" style="font-size: 1.4rem; color: #333;">Ready to ace your interviews?</h2>
+          <div class="d-grid gap-3 mb-4">
+            <a href="{% url 'user_login' %}" class="btn btn-primary btn-lg" style="padding: 0.8rem 1.5rem; font-size: 1rem;">
+              <i class="fas fa-user-circle me-2"></i>User Login
+            </a>
+            <a href="{% url 'admin_login' %}" class="btn btn-dark btn-lg" style="padding: 0.8rem 1.5rem; font-size: 1rem;">
+              <i class="fas fa-shield-alt me-2"></i>Admin Login
+            </a>
+          </div>
+          <div class="text-center mt-4">
+            <p class="text-muted mb-0" style="font-size: 0.95rem;">New to CareerFlow AI? 
+              <a href="{% url 'signup' %}" class="btn btn-outline-success btn-sm" style="padding: 0.4rem 1rem; font-size: 0.9rem;">
+                <i class="fas fa-user-plus me-1"></i>Sign Up Now
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

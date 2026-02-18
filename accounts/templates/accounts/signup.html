@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Sign Up | CareerFlow AI{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-5 col-md-7">
+      <div class="card shadow-lg border-0">
+        <div class="card-header bg-gradient text-center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+          <h2 class="mb-0 text-dark"><i class="fas fa-user-plus me-2"></i>Sign Up</h2>
+        </div>
+        <div class="card-body p-4">
+          {% if form.errors %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <i class="fas fa-exclamation-circle me-2"></i><strong>Signup Error</strong>
+              {% for field in form %}
+                {% for error in field.errors %}<div>{{ error }}</div>{% endfor %}
+              {% endfor %}
+              {% for error in form.non_field_errors %}<div>{{ error }}</div>{% endfor %}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endif %}
+          <form method="post" autocomplete="off">
+            {% csrf_token %}
+            {% for field in form %}
+              <div class="mb-4">
+                {{ field.label_tag }}
+                {{ field }}
+              </div>
+            {% endfor %}
+            <div class="d-grid mb-3">
+              <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-user-plus me-2"></i>Create Account</button>
+            </div>
+          </form>
+          <div class="text-center">
+            <p class="text-muted">Already have an account? <a href="{% url 'login' %}" class="btn btn-link p-0">Log in</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

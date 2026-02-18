@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}My Interview Summary | CareerFlow AI{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="row mb-4">
+    <div class="col-12 text-center">
+      <h1 class="dashboard-header mb-2" style="font-size:2.2rem;font-weight:700;color:#667eea;">
+        <i class="fas fa-list-alt me-2"></i>My Interview Summary
+      </h1>
+    </div>
+  </div>
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card shadow-lg border-0 mb-4">
+        <div class="card-body">
+          <h4 class="mb-3">Total Interviews Attended: <span class="badge bg-primary">{{ sessions.count }}</span></h4>
+          {% for session in sessions %}
+          <div class="mb-4">
+            <h5><i class="fas fa-briefcase me-2"></i>{{ session.role_title }} <small class="text-muted">({{ session.created_at|date:'M d, Y H:i' }})</small></h5>
+            <p><strong>Status:</strong> {{ session.get_status_display }} | <strong>Score:</strong> {{ session.overall_score|floatformat:1 }}/10</p>
+            <ul class="list-group mb-2">
+              {% for question in session.questions.all %}
+              <li class="list-group-item">
+                <strong>Q{{ question.order }}:</strong> {{ question.question_text }}<br>
+                <strong>Your Answer:</strong> {{ question.answer.user_response|default:'-' }}<br>
+                <strong>Score:</strong> {{ question.answer.ai_score|default:'-' }}/10<br>
+                <strong>Feedback:</strong> {{ question.answer.ai_feedback|default:'-' }}<br>
+                {% if question.answer.topics_to_cover %}
+                <strong>Topics to Cover:</strong> {{ question.answer.topics_to_cover }}<br>
+                {% endif %}
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% empty %}
+          <p>No interviews taken yet.</p>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

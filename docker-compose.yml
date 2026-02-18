@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: careerflow
+      POSTGRES_USER: careerflow
+      POSTGRES_PASSWORD: careerflow
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - '11434:11434'
+    environment:
+      - OLLAMA_MODEL=mistral
+    restart: unless-stopped
+
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - '8000:8000'
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgres://careerflow:careerflow@db:5432/careerflow
+      - OLLAMA_HOST=http://ollama:11434
+      - OLLAMA_MODEL=mistral
+      - DEBUG=True
+    depends_on:
+      - db
+      - ollama
+
+volumes:
+  db_data:

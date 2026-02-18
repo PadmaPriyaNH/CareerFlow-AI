@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+{% block title %}Interview Room | CareerFlow AI{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10">
+      <div class="progress mb-4" style="height: 10px;">
+        <div class="progress-bar" role="progressbar" style="width: {{ progress }}%"></div>
+      </div>
+      <div class="card shadow-lg border-0">
+        <div class="card-header bg-gradient text-white d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+          <span class="badge bg-{% if current_question.question_type == 'technical' %}primary{% else %}success{% endif %}">
+            {{ current_question.question_type|title }}
+          </span>
+          <span>Question {{ current_question.order }} of {{ session.questions.count }}</span>
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">{{ current_question.question_text }}</h5>
+
+          <!-- Form contains only textarea - buttons moved outside for alignment -->
+          <form id="answerForm" data-session="{{ session.id }}" data-question="{{ current_question.id }}">
+            {% csrf_token %}
+            <div class="mb-3">
+              <textarea class="form-control" id="answerText" name="answer" rows="5" placeholder="Type your answer here..."></textarea>
+            </div>
+          </form>
+
+          <!-- All buttons in one flex row - outside form but Submit still works via form attribute -->
+          <div class="d-flex gap-2 mb-3 flex-wrap">
+            <button type="submit" form="answerForm" class="btn btn-primary">Submit Answer</button>
+            <button type="button" class="btn btn-secondary" id="voiceBtn">🎤 Voice Input</button>
+            <button type="button" class="btn btn-danger" id="stopInterviewBtn">⏹️ Stop Interview</button>
+          </div>
+
+          <div id="loading" class="mt-3" style="display: none;">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <span class="ms-2">AI is evaluating your answer...</span>
+          </div>
+
+          <div id="feedback" class="mt-4" style="display: none;">
+            <div class="alert alert-info">
+              <strong>Score: <span id="scoreDisplay"></span>/10</strong>
+              <p id="feedbackText"></p>
+              <hr>
+              <strong>Topics to Cover:</strong>
+              <p id="topicsText"></p>
+            </div>
+            <button id="nextBtn" class="btn btn-primary">Next Question →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const voiceBtn = document.getElementById('voiceBtn');
+const answerText = document.getElementById('answerText');
+
+if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const recognition = new SpeechRecognition();
+  recognition.continuous = true;
+  recognition.interimResults = true;
+
+  let isRecording = false;
+
+  voiceBtn.addEventListener('click', () => {
+    if (isRecording) {
+      recognition.stop();
+      voiceBtn.textContent = '🎤 Voice Input';
+      isRecording = false;
+    } else {
+      recognition.start();
+      voiceBtn.textContent = '🔴 Recording...';
+      isRecording = true;
+    }
+  });
+
+  // FIX #1: Only append FINAL results to prevent text duplication
+  recognition.onresult = (event) => {
+    let finalTranscript = '';
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      if (event.results[i].isFinal) {
+        finalTranscript += event.results[i][0].transcript + ' ';
+      }
+    }
+    if (finalTranscript) {
+      answerText.value += finalTranscript;
+    }
+  };
+
+  recognition.onend = () => {
+    voiceBtn.textContent = '🎤 Voice Input';
+    isRecording = false;
+  };
+
+  recognition.onerror = (event) => {
+    console.error('Speech recognition error:', event.error);
+    voiceBtn.textContent = '🎤 Voice Input';
+    isRecording = false;
+  };
+} else {
+  voiceBtn.style.display = 'none';
+}
+
+const formEl = document.getElementById('answerForm');
+formEl.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const formData = new FormData(formEl);
+  const sessionId = formEl.dataset.session;
+  const questionId = formEl.dataset.question;
+
+  document.getElementById('loading').style.display = 'block';
+  // Disable form inputs instead of hiding form - keeps Stop button accessible
+  const formInputs = formEl.querySelectorAll('input, textarea');
+  formInputs.forEach(input => input.disabled = true);
+  // Also disable buttons in the button row during submission
+  const buttonRow = formEl.nextElementSibling; // the flex div with buttons
+  if (buttonRow) {
+    const buttons = buttonRow.querySelectorAll('button');
+    buttons.forEach(btn => {
+      if (btn.id !== 'stopInterviewBtn') btn.disabled = true; // keep Stop enabled
+    });
+  }
+
+  try {
+    const response = await fetch(`/interview/${sessionId}/submit/${questionId}/`, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+      }
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`Error ${response.status}: ${text.substring(0, 500)}`);
+    }
+
+    const data = await response.json();
+
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('feedback').style.display = 'block';
+    document.getElementById('scoreDisplay').textContent = data.score;
+    document.getElementById('feedbackText').textContent = data.feedback;
+    document.getElementById('topicsText').textContent = data.topics;
+
+    if (data.complete) {
+      document.getElementById('nextBtn').textContent = 'View Final Report';
+      document.getElementById('nextBtn').onclick = () => {
+        window.location.href = data.redirect_url;
+      };
+    } else {
+      document.getElementById('nextBtn').onclick = () => {
+        window.location.reload();
+      };
+    }
+  } catch (error) {
+    document.getElementById('loading').style.display = 'none';
+    formInputs.forEach(input => input.disabled = false);
+    if (buttonRow) {
+      const buttons = buttonRow.querySelectorAll('button');
+      buttons.forEach(btn => btn.disabled = false);
+    }
+    alert(`Error submitting answer: ${error.message}`);
+  }
+});
+
+document.getElementById('stopInterviewBtn').addEventListener('click', function() {
+  if (confirm('Are you sure you want to stop the interview?')) {
+    fetch(`/interview/{{ session.id }}/stop/`, {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': document.querySelector('#answerForm [name=csrfmiddlewaretoken]').value
+      }
+    }).then(resp => {
+      if (resp.redirected) {
+        window.location.href = resp.url;
+      } else if (resp.ok) {
+        window.location.reload();
+      } else {
+        alert('Failed to stop interview.');
+      }
+    }).catch(error => {
+      alert('Failed to stop interview: ' + error.message);
+    });
+  }
+});
+</script>
+{% endblock %}

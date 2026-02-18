@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Interview Report | CareerFlow AI{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10">
+      <div class="card shadow-lg border-0 mb-4">
+        <div class="card-body text-center">
+          <h1 class="display-4 mb-2">🏆 {{ session.overall_score|floatformat:1 }}/10</h1>
+          <p class="lead">Overall Score for <strong>{{ session.role_title }}</strong></p>
+        </div>
+      </div>
+      <h4 class="mb-4">Question-by-Question Breakdown:</h4>
+      {% for answer in answers %}
+      <div class="card mb-3">
+        <div class="card-body">
+          <span class="badge bg-{% if answer.question.question_type == 'technical' %}primary{% else %}success{% endif %}">
+            {{ answer.question.question_type|title }}
+          </span>
+          <p class="mt-2"><strong>Q:</strong> {{ answer.question.question_text }}</p>
+          <p><strong>Your Answer:</strong> {{ answer.user_response }}</p>
+          <p><strong>Score:</strong> {{ answer.ai_score }}/10</p>
+          <p><strong>Feedback:</strong> {{ answer.ai_feedback }}</p>
+          {% if answer.topics_to_cover %}
+          <p><strong>Topics to Cover:</strong> {{ answer.topics_to_cover }}</p>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+      <div class="d-grid mt-4">
+        <a href="{% url 'dashboard' %}" class="btn btn-primary btn-lg"><i class="fas fa-home me-2"></i>Back to Dashboard</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,116 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: careerflow-postgres
+    environment:
+      POSTGRES_USER: careerflow_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-secure_password_123}
+      POSTGRES_DB: careerflow
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U careerflow_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - careerflow-network
+
+  # Ollama AI Service with Mistral
+  ollama:
+    image: ollama/ollama:latest
+    container_name: careerflow-ollama
+    environment:
+      OLLAMA_HOST: 0.0.0.0:11434
+    volumes:
+      - ollama_data:/root/.ollama
+    ports:
+      - "11434:11434"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - careerflow-network
+    # Optional: Use GPU (requires nvidia-docker)
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+
+  # Django Web Application
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    container_name: careerflow-web
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py collectstatic --noinput &&
+             gunicorn --bind 0.0.0.0:8000 --workers 3 config.wsgi:application"
+    environment:
+      DEBUG: ${DEBUG:-False}
+      SECRET_KEY: ${SECRET_KEY:-your-secret-key-change-in-production}
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost,127.0.0.1}
+      DATABASE_URL: postgresql://careerflow_user:${DB_PASSWORD:-secure_password_123}@postgres:5432/careerflow
+      OLLAMA_HOST: http://ollama:11434
+      OLLAMA_MODEL: mistral
+      USE_AZURE_STORAGE: ${USE_AZURE_STORAGE:-False}
+      AZURE_ACCOUNT_NAME: ${AZURE_ACCOUNT_NAME:-}
+      AZURE_ACCOUNT_KEY: ${AZURE_ACCOUNT_KEY:-}
+      AZURE_CONTAINER: ${AZURE_CONTAINER:-media}
+    volumes:
+      - .:/app
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      ollama:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - careerflow-network
+
+  # Nginx Reverse Proxy (Optional, for production)
+  nginx:
+    image: nginx:alpine
+    container_name: careerflow-nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - static_volume:/app/staticfiles:ro
+      - media_volume:/app/media:ro
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - web
+    networks:
+      - careerflow-network
+
+volumes:
+  postgres_data:
+  ollama_data:
+  static_volume:
+  media_volume:
+
+networks:
+  careerflow-network:
+    driver: bridge
