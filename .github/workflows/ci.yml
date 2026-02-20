@@ -25,6 +25,8 @@ jobs:
       SECRET_KEY: test-secret-key
       DEBUG: 'True'
       ALLOWED_HOSTS: localhost,127.0.0.1,testserver
+      AI_PROVIDER: ollama
+      GROQ_API_KEY: ""
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
