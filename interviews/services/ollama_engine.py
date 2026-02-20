@@ -1,3 +1,17 @@
+"""
+⚠️  DEPRECATED - This module is no longer actively used.
+
+The AIService class in ai_service.py is the new provider-agnostic solution.
+It supports both Groq (cloud) and Ollama (local).
+
+This file is kept for backward compatibility only.
+Please use: from interviews.services.ai_service import ai_service
+
+Migration notes:
+- Replace: from interviews.services.ollama_engine import ollama_engine
+- With:     from interviews.services.ai_service import ai_service
+- The API is backward compatible but more flexible.
+"""
 import requests
 import json
 import re

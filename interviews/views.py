@@ -31,24 +31,23 @@ def interview_setup(request):
             session.user = request.user
             session.save()
 
-            # Check if Ollama is available before generating questions
-            from interviews.services.ollama_engine import ollama_engine
-            if not ollama_engine.is_available():
+            # Check if AI is available for personalized questions
+            from interviews.services.ai_service import ai_service
+            if not ai_service.is_available():
                 messages.warning(request, 
                     "⚠️ AI service is unavailable. Using default questions for this session. "
-                    "Please ensure Ollama is running at the configured address for personalized questions.")
+                    "Please check your internet and try again.")
                 # Generate default questions as fallback
                 session.generate_interview_questions()
             else:
                 # Generate questions with AI personalization
                 try:
                     session.generate_interview_questions()
-                    messages.success(request, "Interview setup complete! Starting AI-powered questions...")
+                    messages.success(request, "🎉 Interview setup complete! AI-powered questions ready...")
                 except Exception as e:
                     messages.warning(request, 
-                        f"Interview started with default questions: {type(e).__name__}. "
-                        "Please check your Ollama connection.")
-                    # Session already has status=setup, will use default questions
+                        f"Setup complete. Using default questions due to: {type(e).__name__}")
+                    # Session will use default questions
             
             return redirect('interview_room', session_id=session.id)
     else:
@@ -102,24 +101,25 @@ def submit_answer(request, session_id, question_id):
             return HttpResponse('<div class="alert alert-danger">No answer provided</div>', status=400)
         return JsonResponse({'error': 'No answer provided'}, status=400)
 
-    # Use existing engine; check availability for graceful degradation
-    from interviews.services.ollama_engine import ollama_engine
-    if not ollama_engine.is_available():
-        # Create a neutral answer with default scoring so the session can progress even if AI is down
+    # Use AIService for intelligent evaluation
+    from interviews.services.ai_service import ai_service
+    
+    if not ai_service.is_available():
+        # AI service unavailable - record answer with neutral score
         Answer.objects.create(
             question=question,
             user_response=user_response,
             is_voice=is_voice,
-            ai_score=5,
-            ai_feedback='AI service unavailable; recorded your answer without AI evaluation.',
-            topics_to_cover='',
+            ai_score=6,
+            ai_feedback='AI service is currently unavailable. Your answer has been recorded.',
+            topics_to_cover='Please try again when service is available for detailed feedback.',
         )
         next_question = session.get_next_unanswered_question()
         if next_question:
             return JsonResponse({
                 'success': True,
-                'score': 5,
-                'feedback': 'AI service unavailable; recorded your answer without AI evaluation.',
+                'score': 6,
+                'feedback': 'Service unavailable. Answer recorded. Moving to next question...',
                 'topics': '',
                 'next_question': next_question.question_text,
                 'next_question_id': next_question.id,
@@ -130,24 +130,26 @@ def submit_answer(request, session_id, question_id):
             session.calculate_overall_score()
             return JsonResponse({
                 'success': True,
-                'score': 5,
-                'feedback': 'AI service unavailable; finalizing without evaluation.',
+                'score': 6,
+                'feedback': 'Service unavailable. Interview completed.',
                 'complete': True,
                 'redirect_url': f'/interview/{session.id}/feedback/'
             })
 
-    evaluation = ollama_engine.evaluate_answer(
+    # Get AI evaluation
+    evaluation = ai_service.evaluate_answer(
         question.question_text,
         user_response,
         session.role_title
     )
 
+    # Record the answer with AI feedback
     Answer.objects.create(
         question=question,
         user_response=user_response,
         is_voice=is_voice,
-        ai_score=evaluation.get('score', 5),
-        ai_feedback=evaluation.get('feedback', 'No feedback available'),
+        ai_score=evaluation.get('score', 6),
+        ai_feedback=evaluation.get('feedback', 'Good effort. Keep practicing.'),
         topics_to_cover=evaluation.get('topics_to_cover', ''),
     )
 

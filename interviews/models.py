@@ -6,6 +6,9 @@ from django.utils import timezone
 
 import PyPDF2
 from docx import Document
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class InterviewSession(models.Model):
@@ -60,10 +63,10 @@ class InterviewSession(models.Model):
     def parse_and_save_resume(self) -> Dict:
         """Parse resume and return extracted data"""
         # Import here to avoid circular imports at import time
-        from interviews.services.ollama_engine import ollama_engine
+        from interviews.services.ai_service import ai_service
 
         resume_text = self.extract_resume_text()
-        parsed_data = ollama_engine.parse_resume(resume_text)
+        parsed_data = ai_service.parse_resume(resume_text)
         return parsed_data
 
     def _get_default_questions(self) -> List[Dict]:
@@ -117,25 +120,30 @@ class InterviewSession(models.Model):
 
 
     def generate_interview_questions(self) -> List['Question']:
-        """Generate questions based on JD, Role, and Resume with fallback skills.
+        """Generate questions directly based on JD, Role, and Resume with full context.
         
-        Handles graceful degradation if Ollama is unavailable, using deterministic
-        skill extraction and default question templates.
+        Sends all information (job description, role, resume text) to AI at once
+        for highly personalized and relevant questions.
+        
+        Handles graceful degradation if AI is unavailable, using default questions.
         """
-        from interviews.services.ollama_engine import ollama_engine
+        from interviews.services.ai_service import ai_service
 
-        # Try to parse resume for AI-driven skills, but don't block if unavailable
+        # Get resume text
+        resume_text = self.extract_resume_text()
+
+        # Extract skills for context (optional, AI will focus on full context)
         skills = []
         try:
             resume_data = self.parse_and_save_resume()
             skills = resume_data.get('skills', []) if isinstance(resume_data, dict) else []
         except Exception:
-            # If AI parsing fails, proceed with deterministic extraction
+            # If AI parsing fails, deterministic fallback
             pass
 
-        # Deterministic fallback skill extraction if LLM parse failed or unavailable
+        # Deterministic fallback skill extraction if resume parsing failed
         if not skills:
-            text = (self.extract_resume_text() + ' ' + self.job_description + ' ' + self.role_title).lower()
+            text = (resume_text + ' ' + self.job_description + ' ' + self.role_title).lower()
             common_skills = [
                 'python','django','flask','fastapi','javascript','typescript','react','vue','angular',
                 'node','express','postgres','mysql','sqlite','mongodb','redis','docker','kubernetes',
@@ -146,16 +154,18 @@ class InterviewSession(models.Model):
             for s in common_skills:
                 if s in text:
                     detected.append(s)
-            # dedupe and limit
-            skills = list(dict.fromkeys(detected))[:15]
+            skills = list(dict.fromkeys(detected))[:10]
 
         try:
-            questions_data = ollama_engine.generate_questions(
-                self.job_description,
-                self.role_title,
-                skills
+            # Use new direct context-based generation
+            questions_data = ai_service.generate_questions_from_context(
+                job_description=self.job_description,
+                role=self.role_title,
+                resume_text=resume_text,
+                parsed_skills=skills
             )
         except Exception as e:
+            logger.error(f"Error generating questions with context: {e}")
             # If question generation fails, use default questions
             questions_data = self._get_default_questions()
 
