@@ -33,8 +33,8 @@ class OllamaEngine:
                     "prompt": prompt,
                     "stream": False,
                     "options": {
-                        "temperature": 0.3,  # lower temperature for more deterministic JSON
-                        "num_predict": 2048,
+                        "temperature": 0.5,  # balanced for fast generation
+                        "num_predict": 256,  # reduced even more for faster inference
                     },
                 },
                 timeout=timeout,
@@ -103,23 +103,15 @@ class OllamaEngine:
         if not resume_text:
             return base
 
-        prompt = f"""
-You are a strict JSON generator resume parser. Extract the following information and return ONLY valid JSON (no prose):
-{{
-  "name": "full name",
-  "email": "email address",
-  "phone": "phone number",
-  "skills": ["list", "of", "skills"],
-  "experience": [{{"company": "", "role": "", "duration": ""}}],
-  "education": [{{"degree": "", "institution": "", "year": ""}}]
-}}
+        resume_short = resume_text[:400]
+        prompt = f"""Extract resume info as JSON (ONLY JSON):
+{{"name":"","email":"","phone":"","skills":[],"experience":[],"education":[]}}
 
-Resume Text:
-{resume_text}
+Resume: {resume_short}
 
-Return ONLY JSON. Do not include backticks or explanations.
-"""
-        response = self._send_prompt(prompt)
+Return ONLY valid JSON."""
+        # Use timeout for resume parsing; fallback to defaults if slow
+        response = self._send_prompt(prompt, timeout=40)
         json_block = self._extract_json_block(response)
         data = self._safe_json_loads(json_block) if json_block else None
 
@@ -157,23 +149,18 @@ Return ONLY JSON. Do not include backticks or explanations.
         """Generate 10 interview questions (5 technical + 5 behavioral).
         Always returns a list of dicts with keys: question_text, question_type, order
         """
-        skills_str = ", ".join(skills) if skills else "general"
-        prompt = f"""
-You are a strict JSON generator for interview questions.
+        skills_str = ", ".join(skills[:5]) if skills else "general"
+        job_desc_short = job_description[:300] if job_description else ""
+        prompt = f"""Generate 10 interview questions as JSON (ONLY JSON):
+{{"technical": ["q1","q2","q3","q4","q5"], "behavioral": ["q1","q2","q3","q4","q5"]}}
 
-Job Description:\n{job_description}\n
-Target Role: {role}
-Candidate Skills: {skills_str}
+Role: {role}
+Skills: {skills_str}
+Job: {job_desc_short}
 
-Generate exactly 10 interview questions as valid JSON only:
-{{
-  "technical": ["question 1", "question 2", "question 3", "question 4", "question 5"],
-  "behavioral": ["question 1", "question 2", "question 3", "question 4", "question 5"]
-}}
-
-Return ONLY JSON. Do not add any extra text.
-"""
-        response = self._send_prompt(prompt)
+Return ONLY valid JSON."""
+        # Use timeout for question generation; fallback to defaults if slow  
+        response = self._send_prompt(prompt, timeout=60)
         json_block = self._extract_json_block(response)
         data = self._safe_json_loads(json_block) if json_block else None
 
@@ -232,35 +219,35 @@ Return ONLY JSON. Do not add any extra text.
         """Evaluate user's answer and provide feedback. Returns dict with keys:
         score (0-10 int), feedback (str), topics_to_cover (str)
         """
-        prompt = f"""
-You are an expert interviewer. Evaluate the candidate's answer strictly as JSON (no extra text):
-{{
-  "score": 7,  // integer 0-10
-  "feedback": "Detailed feedback on what was good and what needs improvement",
-  "topics_to_cover": ["topic A", "topic B"]
-}}
-
-Role: {role}
-Question:\n{question}
-Candidate's Answer:\n{answer}
-
-Return ONLY JSON. Do not include backticks or explanations.
-"""
-        response = self._send_prompt(prompt)
+        # Shortened prompt for faster generation
+        prompt = f"""Rate this: Role: {role}, Q: {question}, A: {answer}
+JSON: {{"score": 7, "feedback": "Good", "topics_to_cover": []}}"""
+        # Increased timeout for slow systems (up to 90 seconds)
+        response = self._send_prompt(prompt, timeout=90)
+        
+        # Check if response is an error message
+        if response.startswith("Error:"):
+            # Return reasonable defaults if Ollama is slow/unavailable
+            return {
+                "score": 6,
+                "feedback": f"Recorded your answer. {response}. Please try again or check your Ollama connection.",
+                "topics_to_cover": "Re-attempt this question when AI service is responsive.",
+            }
+        
         json_block = self._extract_json_block(response)
         data = self._safe_json_loads(json_block) if json_block else None
 
-        score = 5
-        feedback = "No feedback available"
+        score = 6
+        feedback = "Recorded your answer but evaluation is pending."
         topics_out: Union[str, List[str]] = []
 
         if isinstance(data, dict):
             # Score normalization
             try:
-                score_val = int(round(float(data.get("score", 5))))
+                score_val = int(round(float(data.get("score", 6))))
                 score = max(0, min(10, score_val))
             except Exception:
-                score = 5
+                score = 6
 
             feedback = str(data.get("feedback", feedback))
 
@@ -280,7 +267,8 @@ Return ONLY JSON. Do not include backticks or explanations.
     def is_available(self, timeout: int = 5) -> bool:
         """Quick health check for the Ollama host (used by tests/monitoring)."""
         try:
-            resp = requests.get(f"{self.host}/api/models", timeout=timeout)
+            # Use /api/tags endpoint which returns available models
+            resp = requests.get(f"{self.host}/api/tags", timeout=timeout)
             return resp.status_code == 200
         except Exception:
             return False

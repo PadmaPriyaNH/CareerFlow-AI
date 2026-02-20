@@ -20,27 +20,57 @@
 
 ## 🚀 Quick Start
 
-### 1. Local Development
+### Option 1: Complete Local Setup (Recommended for Development)
+
+**Step 1: Install Ollama**
+1. Download Ollama from [ollama.ai](https://ollama.ai)
+2. Install and run it
+3. Pull the Mistral model:
 ```bash
-python -m venv .venv && .\.venv\Scripts\activate
+ollama pull mistral
+```
+4. Start Ollama service (it will run on `http://localhost:11434`):
+```bash
+ollama serve
+```
+
+**Step 2: Setup Django Project**
+```bash
+# 1. Activate virtual environment
+.\.venv\Scripts\activate
+
+# 2. Install dependencies
 pip install -r requirements.txt
-cp .env.example .env  # then edit .env and set SECRET_KEY, DEBUG, ALLOWED_HOSTS, etc.
+
+# 3. Setup environment file
+cp .env.example .env
+# Edit .env and set: SECRET_KEY, DEBUG=True, ALLOWED_HOSTS=localhost,127.0.0.1
+
+# 4. Run migrations
 python manage.py migrate
+
+# 5. Collect static files
 python manage.py collectstatic --noinput
+
+# 6. Create superuser (admin)
+python manage.py createsuperuser
+```
+
+**Step 3: Start Django Server**
+```bash
 python manage.py runserver
 ```
-Visit: http://localhost:8000
 
-### 2. Docker Compose (Recommended)
+**Step 4: Access the Application**
+- **Web App:** http://localhost:8000
+- **Admin:** http://localhost:8000/admin/
+- **Login:** Use the superuser credentials you created
+
+### Option 2: Docker Compose (All-in-One)
 ```bash
 docker compose up --build
 # App: http://localhost:8000
 # Admin: http://localhost:8000/admin/
-```
-
-### 3. Create Superuser (Admin)
-```bash
-python manage.py createsuperuser
 ```
 
 ---
