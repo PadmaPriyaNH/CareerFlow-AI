@@ -1,7 +1,7 @@
 Django>=5.0,<6.0
 pillow>=10.0
 python-docx>=0.8.11
-PyPDF2>=4.0
+PyPDF2>=3.0,<4.0
 requests>=2.31
 python-decouple>=3.8
 
