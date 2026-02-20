@@ -3,9 +3,6 @@
 
 **CareerFlow AI** is a modern, secure, and AI-powered mock interview platform. It helps users practice interviews, get instant AI feedback, and improve their career readiness—all with a beautiful, intuitive interface.
 
-![CI](https://img.shields.io/github/actions/workflow/status/your-org/your-repo/ci.yml?branch=main&label=CI&style=flat-square)
-![License](https://img.shields.io/github/license/your-org/your-repo?style=flat-square)
-
 ---
 
 ## ✨ Features
