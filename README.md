@@ -7,6 +7,12 @@
 
 ---
 
+**Author:** N H Padma Priya  
+**Created:** 2026  
+**Mission:** Empowering careers through AI
+
+---
+
 ## ✨ Features
 - **AI-Powered Mock Interviews:** Upload your resume, set your target role, and get tailored interview questions with instant AI feedback.
   - **Groq** (recommended): Fast cloud AI, 1-3 second response times
