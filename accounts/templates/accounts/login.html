@@ -2,18 +2,18 @@
 {% block title %}Login | CareerFlow AI{% endblock %}
 
 {% block content %}
-<div class="container py-5">
+<div class="container py-4 py-md-5">
   <div class="row justify-content-center">
-    <div class="col-lg-5 col-md-7">
+    <div class="col-12 col-sm-11 col-md-8 col-lg-5">
       <div class="card shadow-lg border-0">
         <div class="card-header bg-gradient text-center"
              style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
 
-          <h3 class="mb-0 text-dark fw-bold">
-            <i class="fas fa-sign-in-alt me-2 text-dark"></i>Login
+          <h3 class="mb-0 text-white fw-bold" style="font-size: clamp(1.1rem, 2.5vw, 1.5rem);">
+            <i class="fas fa-sign-in-alt me-2"></i>Login
           </h3>
 
-          <small class="text-dark fw-bold">Mock Interview Platform</small>
+          <small class="text-white fw-bold" style="font-size: clamp(0.85rem, 1.5vw, 0.95rem);">Mock Interview Platform</small>
 
         </div>
 
@@ -61,20 +61,20 @@
             <div class="d-grid mt-4">
               <button type="submit"
                       class="btn btn-primary btn-lg shadow-sm">
-                <i class="fas fa-sign-in-alt me-2"></i>Login
+                <i class="fas fa-sign-in-alt me-2"></i><span class="d-none d-sm-inline">Login</span><span class="d-inline d-sm-none">Sign In</span>
               </button>
             </div>
           </form>
 
           <div class="text-center mt-3">
-            <a href="{% url 'password_reset' %}" class="text-decoration-none">
+            <a href="{% url 'password_reset' %}" class="text-decoration-none btn-link" style="font-size: clamp(0.85rem, 1.5vw, 0.95rem);">
               Forgot Password?
             </a>
           </div>
 
           <div class="text-center mt-2">
-            <span>Don't have an account?</span>
-            <a href="{% url 'signup' %}">Sign up</a>
+            <span style="font-size: clamp(0.85rem, 1.5vw, 0.95rem);">Don't have an account?</span>
+            <a href="{% url 'signup' %}" style="font-size: clamp(0.85rem, 1.5vw, 0.95rem);">Sign up</a>
           </div>
 
         </div>

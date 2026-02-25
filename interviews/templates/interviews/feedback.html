@@ -1,34 +1,36 @@
 {% extends 'base.html' %}
 {% block title %}Interview Report | CareerFlow AI{% endblock %}
 {% block content %}
-<div class="container py-5">
+<div class="container py-4 py-md-5">
   <div class="row justify-content-center">
-    <div class="col-lg-8 col-md-10">
+    <div class="col-12 col-md-10 col-lg-8">
       <div class="card shadow-lg border-0 mb-4">
         <div class="card-body text-center">
-          <h1 class="display-4 mb-2">🏆 {{ session.overall_score|floatformat:1 }}/10</h1>
-          <p class="lead">Overall Score for <strong>{{ session.role_title }}</strong></p>
+          <h1 class="display-4 mb-2" style="font-size: clamp(2rem, 5vw, 3.5rem);">🏆 {{ session.overall_score|floatformat:1 }}/10</h1>
+          <p class="lead" style="font-size: clamp(1rem, 2vw, 1.2rem);">Overall Score for <strong>{{ session.role_title }}</strong></p>
         </div>
       </div>
-      <h4 class="mb-4">Question-by-Question Breakdown:</h4>
+      <h4 class="mb-4" style="font-size: clamp(1.1rem, 2.5vw, 1.3rem);">Question-by-Question Breakdown:</h4>
       {% for answer in answers %}
       <div class="card mb-3">
         <div class="card-body">
           <span class="badge bg-{% if answer.question.question_type == 'technical' %}primary{% else %}success{% endif %}">
             {{ answer.question.question_type|title }}
           </span>
-          <p class="mt-2"><strong>Q:</strong> {{ answer.question.question_text }}</p>
-          <p><strong>Your Answer:</strong> {{ answer.user_response }}</p>
-          <p><strong>Score:</strong> {{ answer.ai_score }}/10</p>
-          <p><strong>Feedback:</strong> {{ answer.ai_feedback }}</p>
+          <p class="mt-3 mb-2" style="word-break: break-word;"><strong>Q:</strong> {{ answer.question.question_text }}</p>
+          <div style="background: rgba(0,0,0,0.02); padding: clamp(8px, 2vw, 12px); border-radius: 0.5rem; margin: clamp(12px, 2vw, 16px) 0;">
+            <p class="mb-0" style="word-break: break-word; font-size: clamp(0.9rem, 1.5vw, 1rem);"><strong>Your Answer:</strong> {{ answer.user_response }}</p>
+          </div>
+          <p class="mb-2" style="word-break: break-word;"><strong>Score:</strong> <span class="badge bg-primary">{{ answer.ai_score }}/10</span></p>
+          <p class="mb-2" style="word-break: break-word;"><strong>Feedback:</strong> {{ answer.ai_feedback }}</p>
           {% if answer.topics_to_cover %}
-          <p><strong>Topics to Cover:</strong> {{ answer.topics_to_cover }}</p>
+          <p class="mb-0" style="word-break: break-word;"><strong>Topics to Cover:</strong> {{ answer.topics_to_cover }}</p>
           {% endif %}
         </div>
       </div>
       {% endfor %}
       <div class="d-grid mt-4">
-        <a href="{% url 'dashboard' %}" class="btn btn-primary btn-lg"><i class="fas fa-home me-2"></i>Back to Dashboard</a>
+        <a href="{% url 'dashboard' %}" class="btn btn-primary btn-lg"><i class="fas fa-home me-2"></i><span class="d-none d-sm-inline">Back to Dashboard</span><span class="d-inline d-sm-none">Home</span></a>
       </div>
     </div>
   </div>

@@ -1,0 +1,793 @@
+/** 
+ * Responsive Design Stylesheet - CareerFlow AI
+ * Mobile-First Approach with responsive utilities
+ * Supports: Mobile, Tablet, Laptop, Desktop
+ */
+
+/* ============================================================================
+   ROOT & GENERAL RESPONSIVE SETTINGS
+   ============================================================================ */
+
+:root {
+  /* Responsive font scaling */
+  --font-size-base: clamp(14px, 2.5vw, 16px);
+  --font-size-h1: clamp(24px, 5vw, 48px);
+  --font-size-h2: clamp(20px, 4vw, 36px);
+  --font-size-h3: clamp(18px, 3.5vw, 28px);
+  --font-size-h4: clamp(16px, 3vw, 24px);
+  --font-size-h5: clamp(14px, 2.5vw, 20px);
+  
+  /* Responsive spacing */
+  --spacing-xs: clamp(4px, 1vw, 8px);
+  --spacing-sm: clamp(8px, 2vw, 12px);
+  --spacing-md: clamp(16px, 3vw, 24px);
+  --spacing-lg: clamp(24px, 4vw, 32px);
+  --spacing-xl: clamp(32px, 5vw, 48px);
+  
+  /* Responsive padding */
+  --padding-mobile: clamp(12px, 3vw, 16px);
+  --padding-tablet: clamp(16px, 4vw, 20px);
+  --padding-desktop: clamp(24px, 5vw, 32px);
+}
+
+/* Universal box-sizing for responsive calculations */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-size: var(--font-size-base);
+  line-height: 1.6;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  word-break: break-word;
+  overflow-x: hidden;
+}
+
+/* ============================================================================
+   RESPONSIVE TYPOGRAPHY
+   ============================================================================ */
+
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1.2;
+  margin-bottom: var(--spacing-md);
+  word-wrap: break-word;
+}
+
+h1 { font-size: var(--font-size-h1); }
+h2 { font-size: var(--font-size-h2); }
+h3 { font-size: var(--font-size-h3); }
+h4 { font-size: var(--font-size-h4); }
+h5 { font-size: var(--font-size-h5); }
+
+p {
+  margin-bottom: var(--spacing-md);
+  font-size: inherit;
+}
+
+.lead {
+  font-size: clamp(14px, 2vw, 18px);
+}
+
+.small, small {
+  font-size: 85%;
+  line-height: 1;
+}
+
+/* ============================================================================
+   RESPONSIVE CONTAINERS & LAYOUTS
+   ============================================================================ */
+
+.container, .container-fluid {
+  padding-left: var(--padding-mobile);
+  padding-right: var(--padding-mobile);
+}
+
+@media (min-width: 768px) {
+  .container, .container-fluid {
+    padding-left: var(--padding-tablet);
+    padding-right: var(--padding-tablet);
+  }
+}
+
+@media (min-width: 1200px) {
+  .container, .container-fluid {
+    padding-left: var(--padding-desktop);
+    padding-right: var(--padding-desktop);
+  }
+}
+
+/* Flexible grid system enhancements */
+.row {
+  margin-left: calc(-1 * var(--spacing-xs));
+  margin-right: calc(-1 * var(--spacing-xs));
+}
+
+.row > * {
+  padding-left: var(--spacing-xs);
+  padding-right: var(--spacing-xs);
+}
+
+@media (min-width: 768px) {
+  .row {
+    margin-left: calc(-1 * var(--spacing-md));
+    margin-right: calc(-1 * var(--spacing-md));
+  }
+  
+  .row > * {
+    padding-left: var(--spacing-md);
+    padding-right: var(--spacing-md);
+  }
+}
+
+/* ============================================================================
+   RESPONSIVE NAVIGATION
+   ============================================================================ */
+
+.navbar {
+  padding: var(--spacing-sm) var(--padding-mobile);
+}
+
+@media (min-width: 768px) {
+  .navbar {
+    padding: var(--spacing-md) var(--padding-tablet);
+  }
+}
+
+.navbar-brand {
+  font-size: clamp(1.2rem, 3vw, 1.7rem);
+  white-space: nowrap;
+}
+
+.navbar-nav {
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.nav-link {
+  font-size: clamp(0.85rem, 2vw, 1rem);
+  padding: var(--spacing-xs) var(--spacing-sm) !important;
+}
+
+@media (max-width: 767px) {
+  .navbar-nav {
+    gap: var(--spacing-xs);
+  }
+  
+  .nav-link {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.6rem !important;
+  }
+  
+  .navbar-brand {
+    font-size: 1.3rem;
+  }
+}
+
+/* Hamburger menu improvements */
+.navbar-toggler {
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  padding: 0.4rem 0.6rem;
+}
+
+.navbar-toggler:focus {
+  box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
+}
+
+/* ============================================================================
+   RESPONSIVE CARDS
+   ============================================================================ */
+
+.card {
+  margin-bottom: var(--spacing-md);
+  border-radius: clamp(0.8rem, 2vw, 1.5rem);
+}
+
+.card-body {
+  padding: var(--padding-mobile);
+}
+
+@media (min-width: 768px) {
+  .card-body {
+    padding: var(--padding-tablet);
+  }
+}
+
+@media (min-width: 1200px) {
+  .card-body {
+    padding: var(--padding-desktop);
+  }
+}
+
+.card-header {
+  padding: var(--padding-mobile);
+  border-radius: clamp(0.8rem, 2vw, 1.5rem) clamp(0.8rem, 2vw, 1.5rem) 0 0 !important;
+}
+
+@media (min-width: 768px) {
+  .card-header {
+    padding: var(--padding-tablet);
+  }
+}
+
+.card-title {
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  margin-bottom: var(--spacing-md);
+  word-break: break-word;
+}
+
+/* ============================================================================
+   RESPONSIVE FORMS
+   ============================================================================ */
+
+.form-label {
+  font-size: clamp(0.85rem, 2vw, 0.95rem);
+  margin-bottom: var(--spacing-sm);
+  white-space: normal;
+  word-break: break-word;
+}
+
+.form-control, .form-select, .form-range {
+  font-size: clamp(14px, 2vw, 16px);
+  padding: clamp(0.4rem, 1vw, 0.8rem) clamp(0.6rem, 1.5vw, 1.1rem);
+  border-radius: clamp(0.4rem, 1vw, 0.8rem);
+  min-height: 44px; /* Touch-friendly minimum */
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: #667eea;
+}
+
+textarea.form-control {
+  min-height: 120px;
+}
+
+@media (max-width: 576px) {
+  textarea.form-control {
+    min-height: 100px;
+    font-size: 16px; /* Prevents zoom on mobile */
+  }
+}
+
+.form-group {
+  margin-bottom: var(--spacing-md);
+}
+
+/* Responsive form layouts */
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: calc(-1 * var(--spacing-xs));
+}
+
+.form-row > * {
+  padding: var(--spacing-xs);
+  flex: 1 1 100%;
+  min-width: 0;
+}
+
+@media (min-width: 576px) {
+  .form-row > :not(:last-child) {
+    flex: 0 0 48%;
+  }
+}
+
+@media (min-width: 768px) {
+  .form-row > :not(:last-child) {
+    flex: 0 0 50%;
+  }
+}
+
+/* ============================================================================
+   RESPONSIVE BUTTONS
+   ============================================================================ */
+
+.btn {
+  font-size: clamp(0.85rem, 2vw, 1rem);
+  padding: clamp(0.4rem, 1vw, 0.7rem) clamp(0.8rem, 2vw, 1.5rem);
+  border-radius: clamp(0.4rem, 1vw, 0.8rem);
+  min-height: 44px; /* Touch-friendly minimum */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.btn-lg {
+  font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+  padding: clamp(0.5rem, 1.5vw, 0.9rem) clamp(1rem, 2.5vw, 2rem);
+}
+
+.btn-sm {
+  font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+  padding: clamp(0.2rem, 0.5vw, 0.4rem) clamp(0.4rem, 1vw, 0.8rem);
+  min-height: 36px;
+}
+
+.btn-block, .w-100 {
+  width: 100%;
+}
+
+/* Responsive button grouping */
+.btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+}
+
+@media (max-width: 576px) {
+  .btn-group .btn {
+    flex: 1 1 calc(50% - var(--spacing-xs));
+    min-width: 120px;
+  }
+}
+
+.d-flex.gap-2 {
+  gap: var(--spacing-sm);
+}
+
+.d-flex.gap-3 {
+  gap: var(--spacing-md);
+}
+
+/* ============================================================================
+   RESPONSIVE IMAGES & MEDIA
+   ============================================================================ */
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.img-fluid {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Responsive image thumbnails */
+.img-thumbnail {
+  max-width: 100%;
+  padding: var(--spacing-xs);
+}
+
+/* Responsive embedded media */
+.embed-responsive {
+  position: relative;
+  display: block;
+  width: 100%;
+  overflow: hidden;
+}
+
+.embed-responsive-16by9::before {
+  content: '';
+  display: block;
+  padding-bottom: 56.25%;
+}
+
+.embed-responsive-4by3::before {
+  content: '';
+  display: block;
+  padding-bottom: 75%;
+}
+
+.embed-responsive-1by1::before {
+  content: '';
+  display: block;
+  padding-bottom: 100%;
+}
+
+.embed-responsive > iframe,
+.embed-responsive > embed,
+.embed-responsive > object,
+.embed-responsive > video {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* ============================================================================
+   RESPONSIVE TABLES
+   ============================================================================ */
+
+.table {
+  font-size: clamp(0.8rem, 1.5vw, 0.95rem);
+  word-break: break-word;
+}
+
+.table-cell-truncate {
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .table-responsive {
+    font-size: 0.85rem;
+  }
+  
+  .table-cell-truncate {
+    max-width: 80px;
+  }
+}
+
+/* ============================================================================
+   RESPONSIVE SPACING UTILITIES
+   ============================================================================ */
+
+/* Margins */
+.m-responsive { margin: var(--spacing-md); }
+.mx-responsive { margin-left: var(--spacing-md); margin-right: var(--spacing-md); }
+.my-responsive { margin-top: var(--spacing-md); margin-bottom: var(--spacing-md); }
+.mt-responsive { margin-top: var(--spacing-md); }
+.mb-responsive { margin-bottom: var(--spacing-md); }
+.ml-responsive { margin-left: var(--spacing-md); }
+.mr-responsive { margin-right: var(--spacing-md); }
+
+/* Padding */
+.p-responsive { padding: var(--spacing-md); }
+.px-responsive { padding-left: var(--spacing-md); padding-right: var(--spacing-md); }
+.py-responsive { padding-top: var(--spacing-md); padding-bottom: var(--spacing-md); }
+.pt-responsive { padding-top: var(--spacing-md); }
+.pb-responsive { padding-bottom: var(--spacing-md); }
+.pl-responsive { padding-left: var(--spacing-md); }
+.pr-responsive { padding-right: var(--spacing-md); }
+
+/* ============================================================================
+   RESPONSIVE ALERTS & MODALS
+   ============================================================================ */
+
+.alert {
+  padding: var(--padding-mobile);
+  font-size: clamp(0.85rem, 2vw, 0.95rem);
+  border-radius: clamp(0.5rem, 1.5vw, 1rem);
+  margin-bottom: var(--spacing-md);
+}
+
+@media (min-width: 768px) {
+  .alert {
+    padding: var(--padding-tablet);
+  }
+}
+
+.modal-header {
+  padding: var(--padding-mobile);
+}
+
+@media (min-width: 768px) {
+  .modal-header {
+    padding: var(--padding-tablet);
+  }
+}
+
+.modal-body {
+  padding: var(--padding-mobile);
+}
+
+@media (min-width: 768px) {
+  .modal-body {
+    padding: var(--padding-tablet);
+  }
+}
+
+.modal-footer {
+  padding: var(--padding-mobile);
+}
+
+@media (min-width: 768px) {
+  .modal-footer {
+    padding: var(--padding-tablet);
+  }
+}
+
+/* ============================================================================
+   RESPONSIVE BADGES & LABELS
+   ============================================================================ */
+
+.badge {
+  font-size: clamp(0.7rem, 1.2vw, 0.85rem);
+  padding: clamp(0.2rem, 0.5vw, 0.35rem) clamp(0.4rem, 1vw, 0.6rem);
+  word-break: break-word;
+  display: inline-block;
+}
+
+.label-responsive {
+  display: inline-block;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: clamp(0.8rem, 1.5vw, 0.95rem);
+}
+
+/* ============================================================================
+   RESPONSIVE PROGRESS BARS
+   ============================================================================ */
+
+.progress {
+  height: clamp(4px, 1vw, 10px);
+  border-radius: clamp(2px, 0.5vw, 5px);
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.progress-bar {
+  transition: width 0.3s linear;
+}
+
+/* ============================================================================
+   RESPONSIVE UTILITIES - DISPLAY
+   ============================================================================ */
+
+/* Responsive text alignment */
+@media (max-width: 576px) {
+  .text-sm-center { text-align: center; }
+  .text-sm-left { text-align: left; }
+  .text-sm-right { text-align: right; }
+}
+
+@media (min-width: 576px) and (max-width: 767px) {
+  .text-md-center { text-align: center; }
+  .text-md-left { text-align: left; }
+  .text-md-right { text-align: right; }
+}
+
+@media (min-width: 768px) {
+  .text-lg-center { text-align: center; }
+  .text-lg-left { text-align: left; }
+  .text-lg-right { text-align: right; }
+}
+
+/* Responsive visibility */
+.hidden-sm { display: none; }
+
+@media (min-width: 576px) {
+  .hidden-sm { display: block; }
+  .hidden-md { display: none; }
+}
+
+@media (min-width: 768px) {
+  .hidden-md { display: block; }
+  .hidden-lg { display: none; }
+}
+
+@media (min-width: 992px) {
+  .hidden-lg { display: block; }
+  .hidden-xl { display: none; }
+}
+
+@media (min-width: 1200px) {
+  .hidden-xl { display: block; }
+}
+
+/* ============================================================================
+   RESPONSIVE FOOTER
+   ============================================================================ */
+
+footer {
+  padding: var(--padding-mobile) var(--padding-mobile);
+  font-size: clamp(0.75rem, 1.5vw, 0.85rem);
+  margin-top: var(--spacing-xl);
+}
+
+@media (min-width: 768px) {
+  footer {
+    padding: var(--padding-tablet) var(--padding-tablet);
+  }
+}
+
+footer p {
+  margin-bottom: var(--spacing-xs);
+}
+
+/* ============================================================================
+   RESPONSIVE BREAKPOINT SPECIFIC STYLES
+   ============================================================================ */
+
+/* XS - Mobile Phones (0px - 575px) */
+@media (max-width: 575px) {
+  /* Adjust main content for smaller screens */
+  main {
+    min-height: 70vh;
+    padding: var(--spacing-sm) 0;
+  }
+  
+  /* Make cards full width */
+  .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8,
+  .col-md-6, .col-md-7, .col-md-9, .col-md-10 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+  
+  /* Stack dashboard cards */
+  .row > .col-lg-4 {
+    margin-bottom: var(--spacing-md);
+  }
+  
+  /* Full-width buttons */
+  .d-grid > .btn {
+    width: 100%;
+  }
+  
+  /* Better textarea on mobile */
+  textarea {
+    font-size: 16px; /* Prevents zoom */
+  }
+}
+
+/* SM - Tablets Portrait (576px - 767px) */
+@media (min-width: 576px) and (max-width: 767px) {
+  main {
+    min-height: 75vh;
+  }
+  
+  .col-md-6 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+
+/* MD - Tablets Landscape (768px - 991px) */
+@media (min-width: 768px) and (max-width: 991px) {
+  .col-md-6 {
+    flex: 0 0 48%;
+    max-width: 48%;
+  }
+  
+  .col-lg-4 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+}
+
+/* LG - Laptops (992px - 1199px) */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .col-lg-4 {
+    flex: 0 0 33.333%;
+    max-width: 33.333%;
+  }
+}
+
+/* XL - Desktops (1200px+) */
+@media (min-width: 1200px) {
+  .col-lg-4 {
+    flex: 0 0 33.333%;
+    max-width: 33.333%;
+  }
+  
+  .col-lg-5 {
+    flex: 0 0 41.666%;
+    max-width: 41.666%;
+  }
+  
+  .col-lg-6 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+  
+  .col-lg-7 {
+    flex: 0 0 58.333%;
+    max-width: 58.333%;
+  }
+  
+  .col-lg-8 {
+    flex: 0 0 66.666%;
+    max-width: 66.666%;
+  }
+}
+
+/* ============================================================================
+   TOUCH-FRIENDLY INTERACTIONS
+   ============================================================================ */
+
+@media (hover: none) and (pointer: coarse) {
+  /* Mobile/Touch devices */
+  button, a, .btn, input, textarea, select {
+    min-height: 44px; /* Recommended touch target size */
+    min-width: 44px;
+  }
+  
+  /* Remove hover effects on touch devices */
+  .btn::before {
+    display: none;
+  }
+  
+  /* Improve tap feedback */
+  .btn, button, a {
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  .btn:active, button:active {
+    opacity: 0.8;
+  }
+}
+
+/* ============================================================================
+   PRINT STYLES
+   ============================================================================ */
+
+@media print {
+  body {
+    background: white;
+    color: #000;
+  }
+  
+  .navbar, footer, .btn, button {
+    display: none;
+  }
+  
+  .container {
+    max-width: 100%;
+  }
+  
+  .card {
+    page-break-inside: avoid;
+  }
+}
+
+/* ============================================================================
+   ORIENTATION-SPECIFIC STYLES
+   ============================================================================ */
+
+@media (orientation: portrait) {
+  /* Portrait specific adjustments */
+  body {
+    max-width: 100%;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  /* Landscape mobile (e.g., mobile viewed sideways) */
+  main {
+    min-height: auto;
+  }
+  
+  nav, footer {
+    padding: var(--spacing-xs) var(--padding-mobile);
+  }
+  
+  .mb-4, .my-4 {
+    margin-bottom: var(--spacing-md);
+  }
+}
+
+/* ============================================================================
+   ACCESSIBILITY & FOCUS STATES
+   ============================================================================ */
+
+/* Enhanced focus states for keyboard navigation */
+*:focus-visible {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+button:focus-visible, a:focus-visible, .btn:focus-visible {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+/* Reduced motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: more) {
+  .card {
+    border: 2px solid #000;
+  }
+  
+  .btn {
+    border: 2px solid #000;
+  }
+}

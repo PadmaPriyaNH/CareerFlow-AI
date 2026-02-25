@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 {% block title %}Sign Up | CareerFlow AI{% endblock %}
 {% block content %}
-<div class="container py-5">
+<div class="container py-4 py-md-5">
   <div class="row justify-content-center">
-    <div class="col-lg-5 col-md-7">
+    <div class="col-12 col-sm-11 col-md-8 col-lg-5">
       <div class="card shadow-lg border-0">
         <div class="card-header bg-gradient text-center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-          <h2 class="mb-0 text-dark"><i class="fas fa-user-plus me-2"></i>Sign Up</h2>
+          <h2 class="mb-0 text-white" style="font-size: clamp(1.1rem, 2.5vw, 1.5rem);"><i class="fas fa-user-plus me-2"></i>Sign Up</h2>
         </div>
         <div class="card-body p-4">
           {% if form.errors %}
@@ -28,11 +28,11 @@
               </div>
             {% endfor %}
             <div class="d-grid mb-3">
-              <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-user-plus me-2"></i>Create Account</button>
+              <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-user-plus me-2"></i><span class="d-none d-sm-inline">Create Account</span><span class="d-inline d-sm-none">Create</span></button>
             </div>
           </form>
           <div class="text-center">
-            <p class="text-muted">Already have an account? <a href="{% url 'login' %}" class="btn btn-link p-0">Log in</a></p>
+            <p class="text-muted" style="font-size: clamp(0.85rem, 1.5vw, 0.95rem);">Already have an account? <a href="{% url 'login' %}" class="btn btn-link p-0">Log in</a></p>
           </div>
         </div>
       </div>

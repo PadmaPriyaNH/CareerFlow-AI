@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 {% block title %}My Interview Summary | CareerFlow AI{% endblock %}
 {% block content %}
-<div class="container py-5">
+<div class="container py-4 py-md-5">
   <div class="row mb-4">
     <div class="col-12 text-center">
-      <h1 class="dashboard-header mb-2" style="font-size:2.2rem;font-weight:700;color:#667eea;">
+      <h1 class="dashboard-header mb-2" style="font-size: clamp(1.8rem, 5vw, 2.2rem);font-weight:700;color:#667eea;">
         <i class="fas fa-list-alt me-2"></i>My Interview Summary
       </h1>
     </div>
@@ -13,27 +13,27 @@
     <div class="col-12">
       <div class="card shadow-lg border-0 mb-4">
         <div class="card-body">
-          <h4 class="mb-3">Total Interviews Attended: <span class="badge bg-primary">{{ sessions.count }}</span></h4>
+          <h4 class="mb-3" style="font-size: clamp(1rem, 2vw, 1.2rem);">Total Interviews Attended: <span class="badge bg-primary">{{ sessions.count }}</span></h4>
           {% for session in sessions %}
-          <div class="mb-4">
-            <h5><i class="fas fa-briefcase me-2"></i>{{ session.role_title }} <small class="text-muted">({{ session.created_at|date:'M d, Y H:i' }})</small></h5>
-            <p><strong>Status:</strong> {{ session.get_status_display }} | <strong>Score:</strong> {{ session.overall_score|floatformat:1 }}/10</p>
-            <ul class="list-group mb-2">
+          <div class="mb-4 pb-3" style="border-bottom: 1px solid #e9ecef;">
+            <h5 style="font-size: clamp(1rem, 2vw, 1.1rem); word-break: break-word;"><i class="fas fa-briefcase me-2"></i>{{ session.role_title }} <small class="text-muted" style="font-size: clamp(0.8rem, 1.5vw, 0.9rem);">({{ session.created_at|date:'M d, Y H:i' }})</small></h5>
+            <p style="font-size: clamp(0.9rem, 1.5vw, 1rem);"><strong>Status:</strong> {{ session.get_status_display }} | <strong>Score:</strong> <span class="badge bg-info">{{ session.overall_score|floatformat:1 }}/10</span></p>
+            <div class="list-group">
               {% for question in session.questions.all %}
-              <li class="list-group-item">
-                <strong>Q{{ question.order }}:</strong> {{ question.question_text }}<br>
-                <strong>Your Answer:</strong> {{ question.answer.user_response|default:'-' }}<br>
-                <strong>Score:</strong> {{ question.answer.ai_score|default:'-' }}/10<br>
-                <strong>Feedback:</strong> {{ question.answer.ai_feedback|default:'-' }}<br>
+              <div class="list-group-item" style="padding: clamp(12px, 2vw, 16px); border: 1px solid #dee2e6; margin-bottom: 12px; border-radius: 0.5rem;">
+                <p class="mb-1" style="font-size: clamp(0.9rem, 1.5vw, 1rem); word-break: break-word;"><strong>Q{{ question.order }}:</strong> {{ question.question_text }}</p>
+                <p class="mb-1" style="font-size: clamp(0.85rem, 1.5vw, 0.95rem); word-break: break-word;"><strong>Your Answer:</strong> {{ question.answer.user_response|default:'-' }}</p>
+                <p class="mb-1" style="font-size: clamp(0.85rem, 1.5vw, 0.95rem);"><strong>Score:</strong> <span class="badge bg-secondary">{{ question.answer.ai_score|default:'-' }}/10</span></p>
+                <p class="mb-1" style="font-size: clamp(0.85rem, 1.5vw, 0.95rem); word-break: break-word;"><strong>Feedback:</strong> {{ question.answer.ai_feedback|default:'-' }}</p>
                 {% if question.answer.topics_to_cover %}
-                <strong>Topics to Cover:</strong> {{ question.answer.topics_to_cover }}<br>
+                <p class="mb-0" style="font-size: clamp(0.85rem, 1.5vw, 0.95rem); word-break: break-word;"><strong>Topics to Cover:</strong> {{ question.answer.topics_to_cover }}</p>
                 {% endif %}
-              </li>
+              </div>
               {% endfor %}
-            </ul>
+            </div>
           </div>
           {% empty %}
-          <p>No interviews taken yet.</p>
+          <p style="font-size: clamp(0.95rem, 1.5vw, 1rem);">No interviews taken yet.</p>
           {% endfor %}
         </div>
       </div>
